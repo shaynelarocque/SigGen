@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&display=swap" rel="stylesheet">
+      <title>Email Signature Generator</title>
+      <style>
+         body {
+         font-family: Archivo, sans-serif;
+         background-color: #313336;
+         margin: 0;
+         padding: 20px;
+         max-width: 800px;
+         margin: 0 auto;
+         margin-left: auto;
+         margin-right: auto;
+         color: #fff;
+         transition: background-color 1s ease;
+         }
+         a[target="_blank"]::after {
+         content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+         margin: 0 3px 0 5px;
+         }
+         .aspect-ratio-wrapper {
+         position: relative;
+         width: 100%;
+         padding-top: 56.25%;
+         overflow: hidden;
+         }
+         .aspect-ratio-wrapper iframe {
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         border: none;
+         }
+         .centered-layout {
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         justify-content: center;
+         height: 100vh;
+         /* Full viewport height */
+         text-align: center;
+         }
+         .centered-layout h1 {
+         font-size: 3em;
+         /* Larger font size */
+         margin: 0.5em 0;
+         /* Adjust spacing */
+         }
+         .centered-layout select {
+         font-size: 1.5em;
+         /* Larger font size */
+         padding: 15px;
+         /* Increased padding */
+         }
+         .transition-layout {
+         transition: all 3s ease-in-out;
+         }
+         h2,
+         h3,
+         h1 {
+         font-family: 'Archivo Black', sans-serif;
+         color: #fff;
+         }
+         label {
+         color: #fff;
+         display: block;
+         margin: 10px 0 5px;
+         }
+         input[type="text"],
+         select {
+         width: 100%;
+         padding: 10px;
+         margin-bottom: 10px;
+         border: 4px solid #fff;
+         color: #000;
+         box-sizing: border-box;
+         background-color: #f5f5f5;
+         }
+         button {
+         background-color: none;
+         color: #000;
+         padding: 10px 20px;
+         border: 4px solid #fff;
+         cursor: pointer;
+         font-size: 16px;
+         margin-top: 10px;
+         transition: background-color 0.3s, color 0.3s;
+         }
+         button:hover {
+         background-color: #fff;
+         color: #000000;
+         }
+         button:active {
+         transform: scale(0.70);
+         }
+         input[type="text"]:focus,
+         select:focus {
+         border-color: #44D775;
+         transition: border-color 0.3s;
+         }
+         #output {
+         background-color: #f5f5f5;
+         border: 4px solid #fff;
+         padding: 10px;
+         min-height: 100px;
+         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+         margin-top: 20px;
+         animation: fadeIn 1s;
+         }
+         a {
+         color: #000;
+         }
+         @keyframes fadeIn {
+         from {
+         opacity: 0;
+         }
+         to {
+         opacity: 1;
+         }
+         }
+      </style>
+   </head>
+   <body>
+      <div id="mainContainer" class="centered-layout transition-layout">
+      <h1>D3 Innovation Hub<br>Email Signature Generator</h1>
+      <div id="templateDiv">
+         <label for="template">Template:</label>
+         <select id="template" onchange="updateForm()">
+            <option value="" disabled selected>Select a Template</option>
+            <option value="template1">template1</option>
+            <option value="template2">template2</option>
+            <option value="template3">template3</option>
+            <option value="template4">template4</option>
+            <option value="template5">template5</option>
+            <option value="template6">template6</option>
+         </select>
+      </div>
+      <div id="formContent" style="display: none;">
+         <div>
+            <label for="name">First Name*:</label>
+            <input type="text" id="firstname" placeholder="Jordan" required>
+         </div>
+         <div>
+            <label for="name">Last Name*:</label>
+            <input type="text" id="lastname" placeholder="Doe" required>
+         </div>
+         <div>
+            <label for="name">Pronouns:</label>
+            <input type="text" id="pronouns" placeholder="He/Him">
+         </div>
+         <div>
+            <label for="title">Job Title*:</label>
+            <input type="text" id="title" placeholder="Job Title Here" required>
+         </div>
+         <div>
+            <label for="email">Email*:</label>
+            <input type="text" id="email" placeholder="jordan@template1.com" required>
+         </div>
+         <div>
+            <div id="phoneDiv">
+               <label for="phone">Phone Number:</label>
+               <input type="text" id="phone" placeholder="(514) 848-2424 ext. 4004">
+            </div>
+            <div id="tooltip"
+               style="padding: 10px; margin-top: 20px;margin-bottom: 10px; background-color: #f5f5f5;color: #000; border: 4px solid #fff; display: none;">
+            </div>
+            <h3 id="signatureStatus">Generated Signature:</h3>
+            <div id="output" style="border:4px solid #fff; padding:10px; min-height:100px;"></div>
+            <div
+               style="padding: 10px; margin-top: 20px;margin-bottom: 10px; background-color: #f5f5f5;color: #000; border: 4px solid #fff;">
+               <p>To use the generated signature, highlight it, copy it, then paste it as a new signature in Gmail.</p>
+               <div class="aspect-ratio-wrapper">
+                  <iframe src="https://drive.google.com/file/d/1l-oLgWdrpDIRWptu9ayZINBNNp9-VMCb/preview" allow="autoplay"
+                     allowfullscreen frameborder="0"></iframe>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script>
+         document.addEventListener('DOMContentLoaded', function () {
+         var allInputs = document.querySelectorAll('#firstname, #lastname, #title, #email, #pronouns, #phone');
+         var timeoutId;
+         
+         allInputs.forEach(function(input) {
+         input.addEventListener('input', checkFieldsAndGenerate);
+         });
+         
+         document.getElementById('template').addEventListener('change', checkFieldsAndGenerate);
+         
+         function checkFieldsAndGenerate() {
+         clearTimeout(timeoutId);
+         
+         var requiredInputs = document.querySelectorAll('#firstname, #lastname, #title, #email');
+         var allRequiredFilled = Array.from(requiredInputs).every(function(input) {
+         return input.value.trim() !== '';
+         });
+         var templateSelected = document.getElementById('template').value !== '';
+         
+         if (allRequiredFilled && templateSelected) {
+         document.getElementById('signatureStatus').textContent = 'Generating...';
+         timeoutId = setTimeout(generateSignature, 3000);
+         }
+         }
+         });
+         function updateForm() {
+         var template = document.getElementById('template').value;
+         var mainContainer = document.getElementById('mainContainer');
+         
+            if (template) {
+              mainContainer.classList.remove('centered-layout');
+              document.getElementById('formContent').style.display = 'block';
+            } else {
+              mainContainer.classList.add('centered-layout');
+              document.getElementById('formContent').style.display = 'none';
+            }
+            updateTooltip();
+              checkFieldsAndGenerate();
+         
+            }
+         function generateSignature() {
+         var userInputs = {
+         firstName: document.getElementById('firstname').value,
+         lastName: document.getElementById('lastname').value.toUpperCase().replace(/ /g, '&nbsp;'),
+         pronouns: document.getElementById('pronouns').value,
+         title: document.getElementById('title').value,
+         email: document.getElementById('email').value,
+         phone: document.getElementById('phone').value,
+         template: document.getElementById('template').value
+         };
+         
+         google.script.run.withSuccessHandler(function(signatureHTML) {
+         document.getElementById('output').innerHTML = signatureHTML;
+         document.getElementById('signatureStatus').textContent = 'Generated Signature:';
+         }).getSignature(userInputs);
+         }
+               function updateTooltip() {
+                 var template = document.getElementById('template').value;
+                 var tooltip = document.getElementById('tooltip');
+               var inputFields = document.querySelectorAll('input[type="text"], select');
+                 var labels = document.querySelectorAll('label');
+               var tooltipContent = '';
+               
+               var templateStyles = {
+                 'template1': {
+                     backgroundColor: '#364FCA',
+                     textColor: '#FFFFFF'
+                 },
+                 'template2': {
+                     backgroundColor: '#EF4723',
+                     textColor: '#FFFFFF'
+                 },
+                 'template3': {
+                     backgroundColor: '#275C49',
+                     textColor: '#FFFFFF'
+                 },
+                 'template4': {
+                     backgroundColor: '#1131A7',
+                     textColor: '#FFFFFF'
+                 },
+                 'template5': {
+                     backgroundColor: '#A15ED1',
+                     textColor: '#FFFFFF'
+                 },
+                 'template6': {
+                     backgroundColor: '#F1D548',
+                     textColor: '#000000'
+                 }
+               };
+               document.body.style.backgroundColor = templateStyles[template].backgroundColor || '#364EC9';
+               
+            inputFields.forEach(function(field) {
+               field.style.backgroundColor = templateStyles[template].backgroundColor;
+               field.style.color = templateStyles[template].textColor;
+               var styleSheet = document.createElement('style')
+               styleSheet.type = 'text/css'
+               styleSheet.innerText = `input[type="text"]::placeholder { color: ${templateStyles[template].textColor}; }`;
+               document.head.appendChild(styleSheet);
+            });
+               
+               labels.forEach(function(label) {
+                 label.style.color = templateStyles[template].textColor;
+               });
+                  
+                  switch(template) {
+                    case 'template1':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><br><div class="aspect-ratio-wrapper"></div><br><br>#2E4FD1,#121016,#44D775,#191919,#E5A0D4,#FFFFFF,#44D775,#E5A0D4,#2E4FD1,#FFFFFF';
+                        break;
+                    case 'template2':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><div class="aspect-ratio-wrapper"></div><br><br>#ef4723,#121016,#9b1b00,#ffffff,#c42a0a,#ff8f77,#19ad50,#1b7496,#fd6d4f,#ffffff';
+                        break;
+                    case 'template3':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><div class="aspect-ratio-wrapper"></div><br><br>#275c49,#121016,#063424,#ffffff,#154c39,#5f907f,#19ad50,#1b7496,#3d7561,#ffffff';
+                        break;
+                    case 'template4':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><div class="aspect-ratio-wrapper"></div><br><br>#1131a7,#121016,#071c67,#ffffff,#0c2685,#4f68c2,#19ad50,#f6d200,#3d7561,#ffffffF';
+                        break;
+                    case 'template5':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><div class="aspect-ratio-wrapper"></div><br><br>#a15ed1,#121016,#6f20a8,#FFFFFF,#873ebc,#f8d5ff,#cdf766,#fffb69,#bd86e4,#FFFFFF';
+                        break;
+                    case 'template6':
+                        tooltipContent = 'While you\'re at it, why not change your Slack theme to match? Paste this into the "Import Legacy Theme" box! <br><div class="aspect-ratio-wrapper"></div><br><br>#f1d548,#121016,#ad920d,#ffffff,#e2c11c,#313131,#573fa6,#f6d200,#ffee99,#ffffff';
+                        break;
+                    default:
+                        tooltipContent = '';
+                  }
+                  
+                  tooltip.innerHTML = tooltipContent;
+                  tooltip.style.display = tooltipContent ? 'block' : 'none';
+                  }
+                  
+      </script>
+   </body>
+</html>
